@@ -1,0 +1,38 @@
+{% extends 'templates/base.html' %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <h1>Add Product to Cart</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form action="{% url 'add_to_cart' %}" method="get">
+            <div class="form-group">
+                <label for="code">Product Code:</label>
+                <input type="text" id="code" name="code" required>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add to Cart</button>
+        </form>
+
+        <div class="back-to-shop">
+            <a href="{% url 'shop:index' %}">Back to Shop</a>
+        </div>
+    </div>
+</body>
+{% endblock %}

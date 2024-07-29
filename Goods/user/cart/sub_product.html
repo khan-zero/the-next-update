@@ -1,0 +1,28 @@
+{% extends 'templates/base.html' %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <h1>Subtract Product from Cart</h1>
+
+        <form action="{% url 'subtract_from_cart' %}" method="get">
+            <div class="form-group">
+                <label for="code">Product Code:</label>
+                <input type="text" id="code" name="code" required>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity to Subtract:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Subtract from Cart</button>
+        </form>
+
+        <div class="back-to-cart">
+            <a href="{% url 'cart' %}">Back to Cart</a>
+        </div>
+    </div>
+</body>
+{% endblock %}
