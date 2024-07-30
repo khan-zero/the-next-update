@@ -1,19 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
 from random import sample
 import string
+
 
 class GenerateCode(models.Model):
     generate_code = models.CharField(max_length=255, blank=True, unique=True)
 
     def save(self, *args, **kwargs):
         if not self.id or not self.generate_code:
-            self.generate_code = "".join(sample(string.ascii_letters + string.digits, 20))
-        super(GenerateCode, self).save(*args, **kwargs)
+            while True:
+                new_code = "".join(sample(string.ascii_letters + string.digits, 20))
+                if not self.__class__.objects.filter(generate_code=new_code).exists():
+                    self.generate_code = new_code
+                    break
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
+
 
 
 

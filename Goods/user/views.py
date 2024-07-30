@@ -1,16 +1,30 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from Goods import models
+from Goods.models import *
 
-
-@login_required(login_url='login') #user authenficatsiyadan otganini ishon hosil qilish
+@login_required(login_url='login')
 def myCart(request):
-        cart = models.Cart.objects.get(
-            author=request.user, 
-            is_active=True)
-        context = {}
-        context['cart']=cart
-        return render(request, 'user/cart/detail.html')
+    cart = Cart.objects.filter(author=request.user, is_active=True).first()
+    
+    if not cart:
+        return redirect('main')
+    context = {'cart': cart}
+    return render(request, 'cart/detail.html', context)
+
+"""
+def myCart(request):
+    try:
+        cart = Cart.objects.get(
+        author=request.user, 
+        is_active=True)
+    except cart.DoesNotExist:
+        cart = None
+    context = {}
+    context['cart']=cart
+    return render(request, 'user/cart/detail.html')
+
+
+"""
     
     
 
@@ -24,11 +38,11 @@ def addProductToCart(request):
     quantity = int(quantity)
     if quantity < 1:
 
-        return redirect('error/')
+        return redirect('main/')
 
-    product = get_object_or_404(models.Product, generate_code=code)
-    cart, _ = models.Cart.objects.get_or_create(author=request.user, is_active=True)
-    cart_product, created = models.CartProduct.objects.get_or_create(
+    product = get_object_or_404(Product, generate_code=code)
+    cart, _ = Cart.objects.get_or_create(author=request.user, is_active=True)
+    cart_product, created = CartProduct.objects.get_or_create(
         cart=cart,
         product=product,
         defaults={'quantity': quantity}  # Default quantity cart products uchun
@@ -46,11 +60,11 @@ def addProductToCart(request):
 def substractProductFromCart(request):
     code = request.GET.get('code')
     quantity = int(request.GET.get('quantity', 1))
-    product_cart = get_object_or_404(models.CartProduct, product__generate_code=code, cart__author=request.user)
+    product_cart = get_object_or_404(CartProduct, product__generate_code=code, cart__author=request.user)
 
     if quantity > product_cart.quantity:
         # kozinkadagi mahsulot bazdagidan ozligiga tekshirish
-        return redirect('error/')
+        return redirect('main/')
 
     product_cart.quantity -= quantity
     product_cart.save()

@@ -22,7 +22,7 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            return redirect('index')
+            return redirect('shop:cart')
         else:
             return redirect('error')
     return render(request, 'login-register.html')

@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+
+
 urlpatterns = [
     path('list', views.listCategory, name='listCategory'),
     path('detail/<int:id>/', views.detailCategory, name='detailCategory'),
